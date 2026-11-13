@@ -1,20 +1,21 @@
 # Imagem base Node.js
-FROM node:20-alpine as build
+FROM node:20-alpine AS build
 
 # Diretório de trabalho
 WORKDIR /app
 
 # Copiar arquivos de configuração
-COPY package.json yarn.lock* ./
+COPY package.json pnpm-lock.yaml ./
 
 # Instalar dependências
-RUN yarn install --frozen-lockfile
+RUN npm install --global pnpm@9.15.9 \
+    && pnpm install --frozen-lockfile
 
 # Copiar código fonte
 COPY . .
 
 # Compilar a aplicação
-RUN yarn build
+RUN pnpm run build
 
 # Imagem para servir o conteúdo estático
 FROM node:20-alpine
